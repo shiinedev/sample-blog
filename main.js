@@ -68,9 +68,65 @@ form.addEventListener("submit",addPost);
     
     postList.appendChild(li);
    
-    
+    attachHandleEvents(li,post);
  }
  
+ //attach handle Events 
+
+ const attachHandleEvents = (li,post) =>{
+    const deleteBtn = li.querySelector(".delete-btn");
+    const editBtn = li.querySelector(".edit-btn");
+
+    deleteBtn.addEventListener("click", () =>{
+        handleDelete(post.id, li);
+        
+    })
+    
+    editBtn.addEventListener("click", () =>{
+        handleEdit(post.id,li);
+    })
+ }
+
+//handle Edit
+const handleEdit = (id, li) =>{
+   const postTitle = li.querySelector(".post-title");
+   const postImg = li.querySelector("img");
+   const postDesc = li.querySelector(".desc");
+    const newTitle = prompt("Update  title",postTitle.textContent);
+    const newImgUrl = prompt("update Img Url",postImg.src);
+    const newDesc = prompt("update description",postDesc.textContent);
+
+    postTitle.textContent = newTitle;
+    postImg.setAttribute('src',newImgUrl);
+    postDesc.textContent = newDesc;
+
+    updatePosts(id,newTitle,newImgUrl,newDesc);
+}
+//update Post 
+
+const updatePosts = (id,newTitle,newImgUrl,newDesc) =>{
+    const posts = getPostFromDom();
+    const post = posts.find(post => post.id == id);
+    if(post !== null && post.trim !== ""){
+        post.title = newTitle;
+        post.img = newImgUrl;
+        post.desc = newDesc;
+        localStorage.setItem("posts", JSON.stringify(posts));
+    }
+    
+    
+}
+
+ //handle Delete 
+
+ const handleDelete = (id,li) =>{
+    let posts = getPostFromDom();
+    posts = posts.filter(post => post.id != id);
+
+    localStorage.setItem("posts", JSON.stringify(posts));
+    li.remove();
+ }
+
  //save post to the Dom
  const savePostToDom = (post) =>{
     const posts = getPostFromDom();
